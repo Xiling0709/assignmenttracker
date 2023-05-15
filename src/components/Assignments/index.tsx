@@ -1,23 +1,40 @@
 import { Assignment } from "../Assignment";
 import styles from "./assignments.module.css";
+import { AssignmentType } from "../../App";
 
-export function Assignments() {
+interface AssignmentsProps {
+  assignments: AssignmentType[];
+  completeAssignment: (assignment: string) => void;
+  deleteAssignment: (assignment: string) => void;
+}
+
+export function Assignments({ assignments, completeAssignment, deleteAssignment }: AssignmentsProps) {
+  const completedAssignments = assignments.filter(a => a.completed);
+  
   return (
     <section className={styles.assignments}>
       <header className={styles.header}>
         <div>
           <p>Created Assignments</p>
-          <span>1</span>
+          <span>{assignments.length}</span>
         </div>
 
         <div>
           <p className={styles.textPurple}>Completed Assignments</p>
-          <span>1 of 1</span>
+          <span>{completedAssignments.length} of {assignments.length}</span>
         </div>
       </header>
 
       <div className={styles.list}>
-        <Assignment />
+        {assignments.map((assignment, index) => (
+          <Assignment 
+            key={index} 
+            title={assignment.title} 
+            completed={assignment.completed}
+            onComplete={() => completeAssignment(assignment.title)}
+            onDelete={() => deleteAssignment(assignment.title)}
+          />
+        ))}
       </div>
     </section>
   );
